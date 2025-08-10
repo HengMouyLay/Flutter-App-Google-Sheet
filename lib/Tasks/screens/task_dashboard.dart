@@ -44,18 +44,29 @@ class _TaskDashboardState extends State<TaskDashboard> {
   }
   Widget _buildBody() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 5,vertical: 10),
+      //margin: EdgeInsets.symmetric(horizontal: 5,vertical: 10),
       width: screenWidth,
       height: screenHeight,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+            colors: [Colors.purple,Colors.white],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomLeft
+        )
+      ),
       child: SingleChildScrollView(
-        child:  _buildGridTaskDashboard(),
+        child: Column(
+          children: [
+            _buildGridTaskDashboard(),
+            _buildListViewTask(),
+          ],
+        ),
       ),
     );
   }
   Widget _buildGridTaskDashboard(){
    return SizedBox(
      width:screenWidth,
-     height: screenHeight,
      child: GridView.builder(
        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
          crossAxisCount: 3,   // 3 columns
@@ -71,7 +82,72 @@ class _TaskDashboardState extends State<TaskDashboard> {
      ,
    );
   }
+  Widget _buildListViewTask(){
+   return Container(
+     width: screenWidth,
+     height: screenHeight,
+     color: Colors.transparent,
+     child: ListView.builder(
+         itemCount: listDashboardModel.length,
+         itemBuilder: (context,index){
+           return _buildItemListViewTask(listDashboardModel[index]);
+         }
+     ),
+   );
+  }
+  Widget _buildItemListViewTask(TaskDashboardModel item){
+   return Container(
+     margin: EdgeInsets.symmetric(horizontal: 5,vertical: 5),
+     width: screenWidth,
+     height: 100,
+     decoration: BoxDecoration(
+       borderRadius: BorderRadius.circular(5),
+       color: Colors.white,
+     ),
+     child: Column(
+       mainAxisAlignment: MainAxisAlignment.center,
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+         Row(
+           children: [
+             _buildIconStatus(item.status.toString()),
+             const SizedBox(width: 10,),
+             Column(
+               children: [
+                 SizedBox(
+                   width: 150,
+                   child: Text(
+                     item.taskName.toString(),
+                     overflow: TextOverflow.ellipsis,
+                     maxLines: 1,
+                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                   ),
+                 )
+                 ,
+                 Text("${item.assignee}"),
+                 Text("${item.startDate}"),
+               ],
+             ),
+           ],
+         ),
 
+       ],
+     ),
+   );
+  }
+  Widget _buildIconStatus(String status){
+   Widget result = SizedBox();
+   if(status == "Pending"){
+     result =  Container(child: Icon(Icons.pending,color: Colors.amber,size: 60,),);
+   }
+   else if(status == "Completed"){
+     result =  Container(child: Icon(Icons.check_circle,color: Colors.green,size: 60,),);
+   }
+   else if(status == "In Progress"){
+     result =  Container(child: Icon(Icons.lock_clock,color: Colors.green,size: 60,),);
+   }
+   return result;
+  }
   Widget buildCardTask(CardTaskInfo info){
     return  SizedBox(
      // margin: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
@@ -86,7 +162,7 @@ class _TaskDashboardState extends State<TaskDashboard> {
             const SizedBox(height: 10,),
             Text(info.taskTitle),
             const SizedBox(height: 10,),
-            Text(info.number.toString(),style: TextStyle(color: info.color,fontWeight: FontWeight.b),),
+            Text(info.number.toString(),style: TextStyle(color: info.color,fontWeight: FontWeight.bold,fontSize: 20),),
           ],
         ),
       ),
