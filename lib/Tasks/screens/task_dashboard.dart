@@ -122,12 +122,15 @@ class _TaskDashboardState extends State<TaskDashboard> {
                       item.taskName.toString(),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
-                      style: TextStyle(
+                      style: TextStyle(fontFamily: 'Content-Bold',
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
                       ),
                     ),
-                    Text("${item.assignee}"),
+                    Text("${item.assignee}",style: TextStyle(fontFamily: 'Khmer-battambong',
+
+    fontSize: 15,
+    ),),
                     Text("${item.startDate}"),
                   ],
                 ),
