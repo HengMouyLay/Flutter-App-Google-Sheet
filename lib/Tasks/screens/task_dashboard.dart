@@ -64,24 +64,25 @@ class _TaskDashboardState extends State<TaskDashboard> {
       ),
     );
   }
-  Widget _buildGridTaskDashboard(){
-   return SizedBox(
-     width:screenWidth,
-     child: GridView.builder(
-       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-         crossAxisCount: 3,   // 3 columns
-         mainAxisSpacing: 1, // vertical spacing
-         crossAxisSpacing: 1,// horizontal spacing
-         childAspectRatio: 1, // width / height ratio of each tile
-       ),
-       itemCount: listCardSummary.length,
-       itemBuilder: (context, index) {
-         return buildCardTask(listCardSummary[index]);
-       },
-     )
-     ,
-   );
+  Widget _buildGridTaskDashboard() {
+    return SizedBox(
+      width: screenWidth,
+      height: 150, // <-- FIX: give it height
+      child: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          mainAxisSpacing: 1,
+          crossAxisSpacing: 1,
+          childAspectRatio: 1,
+        ),
+        itemCount: listCardSummary.length,
+        itemBuilder: (context, index) {
+          return buildCardTask(listCardSummary[index]);
+        },
+      ),
+    );
   }
+
   Widget _buildListViewTask(){
    return Container(
      width: screenWidth,
@@ -95,46 +96,49 @@ class _TaskDashboardState extends State<TaskDashboard> {
      ),
    );
   }
-  Widget _buildItemListViewTask(TaskDashboardModel item){
-   return Container(
-     margin: EdgeInsets.symmetric(horizontal: 5,vertical: 5),
-     width: screenWidth,
-     height: 100,
-     decoration: BoxDecoration(
-       borderRadius: BorderRadius.circular(5),
-       color: Colors.white,
-     ),
-     child: Column(
-       mainAxisAlignment: MainAxisAlignment.center,
-       crossAxisAlignment: CrossAxisAlignment.start,
-       children: [
-         Row(
-           children: [
-             _buildIconStatus(item.status.toString()),
-             const SizedBox(width: 10,),
-             Column(
-               children: [
-                 SizedBox(
-                   width: 150,
-                   child: Text(
-                     item.taskName.toString(),
-                     overflow: TextOverflow.ellipsis,
-                     maxLines: 1,
-                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                   ),
-                 )
-                 ,
-                 Text("${item.assignee}"),
-                 Text("${item.startDate}"),
-               ],
-             ),
-           ],
-         ),
-
-       ],
-     ),
-   );
+  Widget _buildItemListViewTask(TaskDashboardModel item) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      width: screenWidth,
+      height: 100,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: Colors.white,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildIconStatus(item.status.toString()),
+              const SizedBox(width: 10),
+              Expanded( // <-- This fixes the overflow
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.taskName.toString(),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                    Text("${item.assignee}"),
+                    Text("${item.startDate}"),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
+
   Widget _buildIconStatus(String status){
    Widget result = SizedBox();
    if(status == "Pending"){
