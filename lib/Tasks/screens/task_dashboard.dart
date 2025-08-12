@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../models/task_dashboard_model.dart';
 import '../services/task_service.dart';
@@ -18,6 +19,7 @@ class _TaskDashboardState extends State<TaskDashboard> {
   //VARIABLE
   double screenWidth = 0;
   double screenHeight = 0;
+  bool isLoading = true;
   List<CardTaskInfo> listCardSummary = [];
  @override
   void initState() {
@@ -43,27 +45,45 @@ class _TaskDashboardState extends State<TaskDashboard> {
    );
   }
   Widget _buildBody() {
-    return Container(
-      //margin: EdgeInsets.symmetric(horizontal: 5,vertical: 10),
+    return isLoading ? const Center(child: CircularProgressIndicator())  : Container(
       width: screenWidth,
       height: screenHeight,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
-            colors: [Colors.purple,Colors.white],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomLeft
-        )
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildGridTaskDashboard(),
-            _buildListViewTask(),
-          ],
+          colors: [Colors.purple, Colors.white],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomLeft,
         ),
+      ),
+      child: Column(
+        children: [
+          const SizedBox(height: 10,),
+          _buildGridTaskDashboard(),
+          Expanded( // Fills remaining space
+            child: _buildListViewTask(),
+          ),
+        ],
       ),
     );
   }
+
+  Widget _buildListViewTask() {
+    return RefreshIndicator(
+      onRefresh: () async {
+        // isLoading = true;
+        getTaskDashboard();
+      },
+      child: ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(), // allows pull even if short
+        itemCount: listDashboardModel.length,
+        itemBuilder: (context, index) {
+          return _buildItemListViewTask(listDashboardModel[index]);
+        },
+      ),
+    );
+  }
+
+
   Widget _buildGridTaskDashboard() {
     return SizedBox(
       width: screenWidth,
@@ -83,19 +103,6 @@ class _TaskDashboardState extends State<TaskDashboard> {
     );
   }
 
-  Widget _buildListViewTask(){
-   return Container(
-     width: screenWidth,
-     height: screenHeight,
-     color: Colors.transparent,
-     child: ListView.builder(
-         itemCount: listDashboardModel.length,
-         itemBuilder: (context,index){
-           return _buildItemListViewTask(listDashboardModel[index]);
-         }
-     ),
-   );
-  }
   Widget _buildItemListViewTask(TaskDashboardModel item) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -122,12 +129,12 @@ class _TaskDashboardState extends State<TaskDashboard> {
                       item.taskName.toString(),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
-                      style: TextStyle(fontFamily: 'Content-Bold',
+                      style: TextStyle(fontFamily: 'Battambang-Bold',
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
                       ),
                     ),
-                    Text("${item.assignee}",style: TextStyle(fontFamily: 'Khmer-battambong',
+                    Text("${item.assignee}",style: TextStyle(fontFamily: 'Battambang-Regular',
 
     fontSize: 15,
     ),),
@@ -145,13 +152,13 @@ class _TaskDashboardState extends State<TaskDashboard> {
   Widget _buildIconStatus(String status){
    Widget result = SizedBox();
    if(status == "Pending"){
-     result =  Container(child: Icon(Icons.pending,color: Colors.amber,size: 60,),);
+     result =  Container(child: Icon(Icons.pending,color: Colors.amber,size: 50,),);
    }
    else if(status == "Completed"){
-     result =  Container(child: Icon(Icons.check_circle,color: Colors.green,size: 60,),);
+     result =  Container(child: Icon(Icons.check_circle,color: Colors.green,size: 50,),);
    }
    else if(status == "In Progress"){
-     result =  Container(child: Icon(Icons.lock_clock,color: Colors.green,size: 60,),);
+     result =  Container(margin: EdgeInsets.symmetric(horizontal: 5),child: Icon(FontAwesomeIcons.spinner,color: Colors.amber.shade700,size: 40,),);
    }
    return result;
   }
@@ -183,10 +190,12 @@ class _TaskDashboardState extends State<TaskDashboard> {
    listDashboardModel = await taskService.fetchDataDashboard();
    listCardSummary.clear();
    addItemCardInfo();
+   isLoading = false;
+   setState(() {});
  }
  void addItemCardInfo(){
    listCardSummary.add(CardTaskInfo(icon: Icons.task,color: Colors.deepPurple,taskTitle: "All Tasks",number: listDashboardModel.length,status: "all"));
-   listCardSummary.add(CardTaskInfo(icon: Icons.pending,color: Colors.amber,taskTitle: "Pending Task",number: listDashboardModel.where((item) => item.status == "Pending").length,status: "pending"));
+   listCardSummary.add(CardTaskInfo(icon: Icons.pending,color: Colors.amber,taskTitle: "Pending Task",number: listDashboardModel.where((item) => item.status == "Pending" || item.status == "In Progress").length,status: "pending"));
    listCardSummary.add(CardTaskInfo(icon: Icons.check_circle,color: Colors.green,taskTitle: "Complete Task",number: listDashboardModel.where((item) => item.status == "Completed").length,status: "complete"));
 
    setState(() {});

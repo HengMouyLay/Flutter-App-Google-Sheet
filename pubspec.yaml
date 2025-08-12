@@ -35,6 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   http: ^0.13.6
+  font_awesome_flutter: ^10.4.0
 
 dev_dependencies:
   flutter_test:
@@ -77,17 +78,20 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Content-Regular
+    - family: Battambang-Black
       fonts:
-        - asset: assets/fonts/Content-Regular.ttf
-    - family: Content-Bold
+        - asset: assets/fonts/Battambang-Black.ttf
+    - family: Battambang-Bold
       fonts:
-        - asset: assets/fonts/Content-Bold.ttf
-    - family: Khmer-Regular
+        - asset: assets/fonts/Battambang-Bold.ttf
+    - family: Battambang-Light
       fonts:
-        - asset: assets/fonts/Khmer-Regular.ttf
-    - family: Khmer-battambong
+        - asset: assets/fonts/Battambang-Light.ttf
+    - family: Battambang-Regular
       fonts:
-        - asset: assets/fonts/KhmerOS_battambang.ttf
+        - asset: assets/fonts/Battambang-Regular.ttf
+    - family: Battambang-Thin
+      fonts:
+        - asset: assets/fonts/Battambang-Thin.ttf
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
